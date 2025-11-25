@@ -1,0 +1,85 @@
+#terminal 1
+cd ~/Desktop/PX4-Autopilot
+DONT_RUN=1 make px4_sitl gz_x500
+
+#terminal 2
+cd ~/Desktop/PX4-Autopilot/build/px4_sitl_default
+export PX4_HOME_LAT=16.074946
+export PX4_HOME_LON=108.152065
+export PX4_HOME_ALT=10
+export PX4_MAVLINK_UDP_PORT=14541
+PX4_GZ_MODEL_POSE="0,5,0,0,0,0" ./bin/px4 -i 1
+
+#terminal 3
+cd ~/Downloads
+chmod +x QGroundControl-x86_64.AppImage
+./QGroundControl-x86_64.AppImage
+
+
+
+# test trong pxh
+commander arm
+commander mode auto:mission
+commander takeoff
+
+
+#test loi
+# Drone 1
+PX4_MAVLINK_UDP_PORT=14540
+PX4_MAVLINK_UDP_REMOTE_PORT=14550  # gửi cho QGC
+
+# Drone 2
+PX4_MAVLINK_UDP_PORT=14541
+PX4_MAVLINK_UDP_REMOTE_PORT=14551  # gửi cho QGC
+
+
+mavlink stop-all
+mavlink start -u 14541 -r 4000000 -m onboard -x
+
+
+
+
+
+cd ~/Downloads/pycharm-2025.2.4/bin
+chmod u+x pycharm.sh
+sh pycharm.sh
+
+cd ~/Desktop/
+source mavsdk_venv/bin/activate
+python knn_waitpoint.py --plan test4.plan --k 3 --alpha 3.0
+
+
+cd ~/home/ho-nguyen-tam/PycharmProjects/PythonProject
+python ..............
+
+
+
+//////////////////////////////////////////////////////////
+#QRC
+cd ~/Downloads
+chmod +x QGroundControl-x86_64.AppImage
+./QGroundControl-x86_64.AppImage
+
+//////////////////////////////////////////////////////////
+cd ~/Desktop/PX4-Autopilot
+make px4_sitl gz_x500
+
+//////////////////////////////////////////////////////////
+# Chay network_monitor
+cd ~/Desktop/
+source mavsdk_venv/bin/activate
+python network_monitor.py udp://:14540
+
+//////////////////////////////////////////////////////////
+# Chay 4 thuat toan va compare
+
+cd ~/Desktop/
+source mavsdk_venv/bin/activate
+python normal_al.py
+python smoothing_al.py
+python knn_al.py
+python rrt_al.py
+
+python compare_al.py normal.ulg smoothing.ulg knn.ulg rrt.ulg
+
+
